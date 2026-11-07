@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="ar">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Management System</title>
+</head>
+
+<body>
+
+    <h1>Student Management System</h1>
+    <p>نظام إدارة وتحليل نتائج الطلاب</p>
+
+    <script>
+
+        // 1. Student Class
+
+        class Student {
+            constructor(id, name, grades, attendance) {
+                this.id = id;
+                this.name = name;
+                this.grades = grades;
+                this.attendance = attendance;
+            }
+
+            // Calculate Average
+
+            calculateAverage() {
+                let total = this.grades.reduce((sum, grade) => sum + grade, 0);
+                return total / this.grades.length;
+            }
+
+            // Calculate Grade
+
+            getGrade(average) {
+                if (average >= 90) {
+                    return "A";
+                } else if (average >= 80) {
+                    return "B";
+                } else if (average >= 70) {
+                    return "C";
+                } else if (average >= 60) {
+                    return "D";
+                } else if (average >= 50) {
+                    return "E";
+                } else {
+                    return "F";
+                }
+            }
+
+            // Final Result
+
+            getFinalResult(average) {
+                if (average >= 50 && this.attendance >= 75) {
+                    return "ناجح";
+                } else {
+                    return "يحتاج مراجعة";
+                }
+            }
+        }
+
+        // 2. Students Array
+
+        const studentsList = [
+            new Student(101, "Ahmed", [90, 85, 95], 90),
+            new Student(102, "Mona", [45, 40, 48], 80),
+            new Student(103, "Omar", [50, 45, 43], 70),
+            new Student(104, "Sara", [70, 75, 80], 95)
+        ];
+
+        // 3. Students Report
+
+        console.log("===== STUDENTS REPORT =====");
+
+        studentsList.forEach((student) => {
+            let average = student.calculateAverage();
+
+            console.log("-------------------------");
+            console.log("Name:", student.name);
+            console.log("Average:", average.toFixed(2));
+            console.log("Grade:", student.getGrade(average));
+            console.log("Result:", student.getFinalResult(average));
+        });
+
+        // 4. Filter Struggling Students
+
+        const strugglingStudents = studentsList.filter((student) => {
+            let average = student.calculateAverage();
+            return average >= 40 && average <= 49;
+        });
+
+        // 5. Add Mercy Marks using Map
+
+        const mercyStudents = strugglingStudents.map((student) => {
+            let oldAverage = student.calculateAverage();
+
+            return {
+                id: student.id,
+                name: student.name,
+                oldAverage: oldAverage,
+                newAverage: oldAverage + 5
+            };
+        });
+
+        // 6. Calculate New Averages using Reduce
+
+        const totalNewAverages = mercyStudents.reduce((sum, student) => {
+            return sum + student.newAverage;
+        }, 0);
+
+        // 7. Mercy Average with Zero Protection
+
+        let mercyAverage = 0;
+
+        if (mercyStudents.length > 0) {
+            mercyAverage = totalNewAverages / mercyStudents.length;
+        }
+
+        // 8. Mercy Committee Report
+
+        console.log("===== MERCY COMMITTEE REPORT =====");
+
+        console.log("Struggling Students:", mercyStudents);
+
+        console.log("Average After Mercy:", mercyAverage.toFixed(2));
+
+        console.log("===== END OF SYSTEM =====");
+
+    </script>
+
+</body>
+</html>
